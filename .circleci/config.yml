@@ -1,0 +1,71 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Controller implements ActionListener {
+
+    public static final String COMMANDADD = "add";
+    public static final String COMMANDEDIT = "edit";
+    public static final String COMMANDDELETE = "delete";
+    public static final String COMMANDSAVE  = "save";
+    public static final String COMMANDABORT = "abort";
+
+    DefaultListModel<Student> model;
+    MasterView view;
+
+    public void initialise(DefaultListModel<Student> model, MasterView view) {
+        this.model = model;
+        this.view = view;
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(COMMANDADD)) {
+            Student student = new Student();
+            student.initialise();
+            model.addElement(student);
+
+            view.jlist.setSelectedIndex(this.model.getSize() - 1);
+            view.details.open(student);
+
+        } else if (e.getActionCommand().equals(COMMANDEDIT)) {
+
+            int i = view.jlist.getSelectedIndex();
+            if (i == -1 || i >= model.size()) {
+                System.out.println("ungültige Listenelement Selektiert");
+            } else {
+                Student slektierterStudent = (Student) model.get(i);
+                view.details.open(slektierterStudent);
+            }
+
+        } else if (e.getActionCommand().equals(COMMANDDELETE)) {
+
+            int i = view.jlist.getSelectedIndex();
+            if (i == -1 || i >= model.size()) {
+                System.out.println("ungültige Listenelement Selektiert");
+            } else {
+                model.remove(i);
+            }
+
+        } else if (e.getActionCommand().equals(COMMANDABORT)){
+            view.details.abort();
+        } else if (e.getActionCommand().equals(COMMANDSAVE)){
+            int i = view.jlist.getSelectedIndex();
+            if (i == -1 || i >= model.size()) {
+                System.out.println("ungültige Listenelement Selektiert");
+            } else {
+                Student slektierterStudent = (Student) model.get(i);
+                view.details.save(slektierterStudent);
+            }
+            view.repaint();
+        }
+        else {
+            System.out.println("Kommando Unbekannt");
+        }
+
+    }
+
+
+}
+
